@@ -6,6 +6,7 @@ const path = require('path');
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
 
+// Connexion à la base de données avec mongoose
 mongoose.connect('mongodb+srv://lilimly:yipi2616@cluster0.3qkhx.mongodb.net/piquante?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
@@ -14,6 +15,7 @@ mongoose.connect('mongodb+srv://lilimly:yipi2616@cluster0.3qkhx.mongodb.net/piqu
 
 const app = express();
 
+// Définition de Headers pour éviters les erreurs de CORS
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -23,8 +25,8 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 
+// Création des middleware
 app.use('/images', express.static(path.join(__dirname, 'images')));
-
 app.use('/api/sauces', sauceRoutes);
 app.use('/api/auth', userRoutes);
 
