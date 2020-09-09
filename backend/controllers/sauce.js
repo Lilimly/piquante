@@ -84,19 +84,21 @@ exports.likeOrDislike = (req, res, next) => {
       .then((sauce) => res.status(200).json({ message: 'Dislike ajouté !' }))
       .catch(error => res.status(400).json({ error }));
   } else { 
-    // Si l'utilisateur supprime son vote, like === 0
+    // Si like === 0 l'utilisateur supprime son vote
     Sauce.findOne({ _id: req.params.id })
       .then(sauce => {
-        // Si le tableau "userLiked" contient l'ID de like
+        // Si le tableau "userLiked" contient l'ID de l'utilisateur
         if (sauce.usersLiked.includes(req.body.userId)) { 
-          // On vide le tableau "userLiked" pour ne pas que l'utilisateur vote plusieures fois
+          // On enlève un like du tableau "userLiked" 
           Sauce.updateOne({ _id: req.params.id }, { $pull: { usersLiked: req.body.userId }, $inc: { likes: -1 } })
               .then((sauce) => { res.status(200).json({ message: 'Like supprimé !' }) })
               .catch(error => res.status(400).json({ error }))
         } else if (sauce.usersDisliked.includes(req.body.userId)) {
+            // Si le tableau "userDisliked" contient l'ID de l'utilisateur
+            // On enlève un dislike du tableau "userDisliked" 
             Sauce.updateOne({ _id: req.params.id }, { $pull: { usersDisliked: req.body.userId }, $inc: { dislikes: -1 } })
-                .then((sauce) => { res.status(200).json({ message: 'Dislike supprimé !' }) })
-                .catch(error => res.status(400).json({ error }))
+              .then((sauce) => { res.status(200).json({ message: 'Dislike supprimé !' }) })
+              .catch(error => res.status(400).json({ error }))
         }
       })
       .catch(error => res.status(400).json({ error }));

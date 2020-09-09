@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/User');
+const MaskData = require('maskdata');
 
 // Logiques métiers pour les utilisateurs
 // Création de nouveaux utilisateurs (Post signup)
@@ -11,7 +12,7 @@ exports.signup = (req, res, next) => {
     .then(hash => {
         // Création du nouvel utilisateur
         const user = new User({
-            email: req.body.email,
+            email: MaskData.maskEmail2(req.body.email),
             password: hash
         })
         // Sauvegarde dans la base de données
@@ -25,7 +26,7 @@ exports.signup = (req, res, next) => {
 // Création de connexion d'utilisateur enregistré (Post login)
 exports.login = (req, res, next) => {
     // Recherche d'un utilisateur dans la base de données
-    User.findOne({ email: req.body.email })
+    User.findOne({ email: MaskData.maskEmail2(req.body.email) })
     .then(user => {
         // Si on ne trouve pas l'utilisateur
         if(!user) {
