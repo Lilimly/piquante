@@ -1,4 +1,4 @@
-// Utilisation de multer pour enregistrer les images
+// Utilisation de multer pour enregistrer les fichiers images
 const multer = require('multer');
 
 // Modification de l'extension des fichiers

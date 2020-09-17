@@ -31,13 +31,6 @@ exports.createSauce = (req, res, next) => {
   sauce.save()
     .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
     .catch(error => res.status(400).json({ error }));
-
-  // Ajout like/dislike à l'objet sauce
-  sauceObject.likes = 0;
-  sauceObject.dislikes = 0;
-  // Tableau des utilisateur qui like/dislike
-  sauceObject.usersLiked = Array(); 
-  sauceObject.usersDisliked = Array();
 };
 
 // Modification d'une sauce (Update)
@@ -47,7 +40,8 @@ exports.modifySauce = (req, res, next) => {
     {
       ...JSON.parse(req.body.sauce),
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-    } : { ...req.body }; // Si il n'existe pas d'image
+    } : { ...req.body }; 
+    // Si il n'existe pas d'image
     Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
       .then(() => res.status(200).json({ message: 'Objet modifié !'}))
       .catch(error => res.status(400).json({ error }));
