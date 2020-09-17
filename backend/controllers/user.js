@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/User');
-const MaskData = require('maskdata');
 
 // Logiques métiers pour les utilisateurs
 // Création de nouveaux utilisateurs (Post signup)
@@ -10,9 +9,13 @@ exports.signup = (req, res, next) => {
     // Hash du mot de passe avec bcrypt
     bcrypt.hash(req.body.password, 10)
     .then(hash => {
+        // Masquage de l'adresse mail
+        let buff = new Buffer(req.body.email);
+        let emailInbase64 = buff.toString('base64');
+
         // Création du nouvel utilisateur
         const user = new User({
-            email: MaskData.maskEmail2(req.body.email),
+            email: emailInbase64,
             password: hash
         })
         // Sauvegarde dans la base de données
@@ -25,12 +28,16 @@ exports.signup = (req, res, next) => {
 
 // Création de connexion d'utilisateur enregistré (Post login)
 exports.login = (req, res, next) => {
+    // Masquage de l'adresse mail
+    let buff = new Buffer(req.body.email);
+    let emailInbase64 = buff.toString('base64');
+
     // Recherche d'un utilisateur dans la base de données
-    User.findOne({ email: MaskData.maskEmail2(req.body.email) })
+    User.findOne({ email: emailInbase64 })
     .then(user => {
         // Si on ne trouve pas l'utilisateur
         if(!user) {
-            return res.status(401).json({ error: 'Utilisateur non trouvé !'})
+            return res.status(401).json({ error: 'Utilisateur '+ cryptr.encrypt(req.body.email) +' non trouvé !'})
         }
         // On compare le mot de passe de la requete avec celui de la base de données
         bcrypt.compare(req.body.password, user.password)
