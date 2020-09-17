@@ -37,7 +37,7 @@ exports.login = (req, res, next) => {
     .then(user => {
         // Si on ne trouve pas l'utilisateur
         if(!user) {
-            return res.status(401).json({ error: 'Utilisateur '+ cryptr.encrypt(req.body.email) +' non trouvé !'})
+            return res.status(401).json({ error: 'Utilisateur non trouvé !'})
         }
         // On compare le mot de passe de la requete avec celui de la base de données
         bcrypt.compare(req.body.password, user.password)
